@@ -74,7 +74,7 @@ class FileUploadComponent:
         total_files = len(valid_files) + len(invalid_files)
         
         if total_files > 0:
-            st.info(f"📋 {pluralize(total_files, 'file')} uploaded")
+            st.info(f"{pluralize(total_files, 'file')} uploaded")
             
             # Display file details in columns
             all_files = valid_files + invalid_files
@@ -112,10 +112,17 @@ class HashResultsTable:
             html_table += f'<tr style="background-color: {bg_color}; border-bottom: 1px solid #333;">'
             for col in df.columns:
                 value = str(row[col])
-                # Truncate long hash values for display
+                # Check if this is a combined hash column
+                is_combined = col == 'Combined Hash'
+                cell_style = 'padding: 10px; color: #ffffff; font-family: monospace; cursor: pointer;'
+    
+                if is_combined:
+                    cell_style += ' background-color: #2a3f5f; font-weight: bold;'  # Highlight combined hash
+    
+            # Truncate long hash values for display
                 if len(value) > 50:
                     display_value = value[:47] + '...'
-                    html_table += f'<td style="padding: 10px; color: #ffffff; font-family: monospace; cursor: pointer;" title="{value}" onclick="navigator.clipboard.writeText(\'{value}\')">{display_value}</td>'
+                    html_table += f'<td style="{cell_style}" title="{value}" onclick="navigator.clipboard.writeText(\'{value}\')">{display_value}</td>'
                 else:
                     html_table += f'<td style="padding: 10px; color: #ffffff;">{value}</td>'
             html_table += '</tr>'
@@ -135,6 +142,7 @@ class HashResultsTable:
                 "File Name": st.column_config.TextColumn("File Name", width="medium"),
                 "Size": st.column_config.TextColumn("Size", width="small"),
                 "Time": st.column_config.TextColumn("Time", width="medium"),
+                "Combined Hash": st.column_config.TextColumn("Combined Hash", width="large"),  
             }
         )
 
@@ -172,7 +180,26 @@ class DetailedHashView:
                             """, unsafe_allow_html=True)
                         else:
                             st.code(hash_value, language=None)
-
+                # Show combined hash if available
+                if entry.get('combined_hash'):
+                    st.divider()
+                    col_a, col_b = st.columns([1, 5])
+                    with col_a:
+                        st.write(f"**🔗 COMBINED**")
+                    with col_b:
+                        if is_dark_mode:
+                            st.markdown(f"""
+                            <div style="background-color: #2a3f5f; padding: 10px; border-radius: 5px; 
+                                 border: 2px solid #00d4ff; font-family: monospace; color: #00ff00; 
+                                 cursor: pointer; word-break: break-all; font-weight: bold;" 
+                                 onclick="navigator.clipboard.writeText('{entry['combined_hash']}')" 
+                                 title="Click to copy - Combined hash of all selected algorithms">
+                                {entry['combined_hash']}
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.code(entry['combined_hash'], language=None)
+                    st.caption(f"🔗 Combined hash represents all {len(entry['hashes'])} algorithms")
 
 class SessionInfoPanel:
     """Component for displaying session information."""
@@ -180,7 +207,7 @@ class SessionInfoPanel:
     @staticmethod
     def render(files_hashed: int, is_dark_mode: bool):
         """Render session info panel in sidebar."""
-        st.subheader("📊 Session Info")
+        st.subheader("Session Info")
         st.metric("Files Hashed", files_hashed)
         st.metric("Theme", "Dark Mode 🌙" if is_dark_mode else "Light Mode ☀️")
         st.caption("History clears on browser refresh")

@@ -75,6 +75,49 @@ class FileHasher:
         
         return results
     
+    def calculate_combined_hash(
+        self,
+        individual_hashes: Dict[str, str],
+        algorithm: str = 'SHA-256'
+    ) -> str:
+        """
+        Calculate a combined hash from multiple individual hashes.
+        
+        This creates a single hash value by concatenating all individual
+        hash values and hashing the result.
+        
+        Args:
+            individual_hashes: Dictionary of algorithm names to hash values
+            algorithm: Algorithm to use for the combined hash (default: SHA-256)
+            
+        Returns:
+            Combined hash digest as hexadecimal string
+            
+        Example:
+            >>> hashes = {'SHA-256': 'abc123', 'MD5': 'def456'}
+            >>> combined = hasher.calculate_combined_hash(hashes)
+            >>> print(combined)
+            'xyz789...'
+        """
+        if len(individual_hashes) <= 1:
+            # No point in combined hash with only 1 algorithm
+            return None
+        
+        # Sort by algorithm name for consistency
+        sorted_algos = sorted(individual_hashes.keys())
+        
+        # Concatenate all hash values in alphabetical order
+        concatenated = ''.join(individual_hashes[algo] for algo in sorted_algos)
+        
+        # Hash the concatenated string
+        if algorithm not in config.HASH_ALGORITHMS:
+            algorithm = 'SHA-256'  # Fallback to SHA-256
+        
+        hasher = config.HASH_ALGORITHMS[algorithm]()
+        hasher.update(concatenated.encode('utf-8'))
+        
+        return hasher.hexdigest()
+    
     @staticmethod
     def verify_hash(file_data: bytes, algorithm_name: str, expected_hash: str) -> bool:
         """

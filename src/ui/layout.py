@@ -131,6 +131,11 @@ def process_files(valid_files, selected_algorithms):
             )
             elapsed_time = time.time() - start_time
             
+            #Calculate combined hash if multiple algorithms selected
+            combined_hash = None
+            if len(selected_algorithms) > 1:
+                combined_hash = hasher.calculate_combined_hash(hashes)
+
             # Clear progress indicators
             progress_bar.empty()
             status_text.success(f"✅ Completed in {elapsed_time:.2f}s")
@@ -140,7 +145,8 @@ def process_files(valid_files, selected_algorithms):
                 file_name=file_info.name,
                 file_size=file_info.size,
                 file_size_formatted=format_file_size(file_info.size),
-                hashes=hashes
+                hashes=hashes,
+                combined_hash=combined_hash
             )
             st.session_state[config.SESSION_KEYS['HISTORY']].append(entry)
     
@@ -157,7 +163,7 @@ def render_results(theme_manager: ThemeManager):
         return
     
     st.divider()
-    st.subheader("📊 Hash Results")
+    st.subheader("{Hash Results}")
     
     # Prepare and display table
     df = HashResultFormatter.format_for_table(history)

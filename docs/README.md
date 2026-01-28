@@ -163,9 +163,6 @@ docker run -p 8501:8501 hash-tool
 | BLAKE2b | 512-bit | Very Fast | Modern, fast |
 | BLAKE2s | 256-bit | Very Fast | Modern, smaller |
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ### Quick Contribution Guide
 
@@ -186,12 +183,6 @@ This project is licensed under the MIT License - see LICENSE file for details.
 - Built with [Streamlit](https://streamlit.io/)
 - Uses Python's built-in `hashlib` module
 - Inspired by the need for better file verification tools
-
-## 📧 Contact
-
-Your Name - [@yourhandle](https://twitter.com/yourhandle)
-
-Project Link: [https://github.com/yourusername/hash-tool](https://github.com/yourusername/hash-tool)
 
 ---
 

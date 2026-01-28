@@ -7,8 +7,8 @@ All application settings are centralized here for easy modification.
 import hashlib
 
 # Application metadata
-APP_TITLE = "File Hashing Tool"
-APP_ICON = ""
+APP_TITLE = "FileHasher Tool"
+APP_ICON = "#"
 APP_DESCRIPTION = "Upload multiple files and generate hash values for verification and integrity checking."
 
 # File upload constraints

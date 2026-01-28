@@ -131,3 +131,19 @@ def pluralize(count: int, singular: str, plural: str = None) -> str:
     
     form = singular if count == 1 else plural
     return f"{count} {form}"
+
+def format_combined_hash_label(num_algorithms: int) -> str:
+    """
+    Format label for combined hash.
+    
+    Args:
+        num_algorithms: Number of algorithms combined
+        
+    Returns:
+        Formatted label string
+        
+    Example:
+        >>> format_combined_hash_label(3)
+        'Combined (3 algorithms)'
+    """
+    return f"Combined ({num_algorithms} algorithms)"
